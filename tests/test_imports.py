@@ -7,7 +7,7 @@ from dionysus_metacog.provenance import SourceReference
 
 
 def test_import_root_version() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.1.1"
     assert AttractorAssessment.__name__ == "AttractorAssessment"
 
 
