@@ -119,6 +119,11 @@ assessment = AttractorAssessment.from_basin(basin=basin, model=model)
 control_signal = assessment.to_signal()
 ```
 
+When available, a `MarkovBlanketRecord` can be passed into
+`AttractorAssessment.from_basin(...)` so the emitted control signal carries the
+internal, external, sensory, and active-state boundary context alongside the
+POMDP observation.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and

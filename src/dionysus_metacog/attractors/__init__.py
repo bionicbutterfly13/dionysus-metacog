@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 from dionysus_metacog.core import MetaCogSignal
-from dionysus_metacog.models import PomdpStateRecord
+from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
 
 
 class AttractorControlPolicy(StrEnum):
@@ -111,6 +111,7 @@ class AttractorAssessment:
     policy: AttractorControlPolicy
     free_energy_proxy: float
     source_ids: tuple[str, ...] = ()
+    blanket: MarkovBlanketRecord | None = None
 
     def __post_init__(self) -> None:
         if self.free_energy_proxy < 0.0:
@@ -125,6 +126,7 @@ class AttractorAssessment:
         *,
         basin: AttractorBasin,
         model: PomdpStateRecord,
+        blanket: MarkovBlanketRecord | None = None,
     ) -> "AttractorAssessment":
         """Assess a source-backed basin against a POMDP-style model record."""
 
@@ -133,6 +135,7 @@ class AttractorAssessment:
             model=model,
             source_ids=basin.source_ids,
             novelty=basin.as_state().novelty,
+            blanket=blanket,
         )
 
     @classmethod
@@ -143,6 +146,7 @@ class AttractorAssessment:
         model: PomdpStateRecord,
         source_ids: tuple[str, ...],
         novelty: float | None = None,
+        blanket: MarkovBlanketRecord | None = None,
     ) -> "AttractorAssessment":
         """Assess a host-neutral attractor state without requiring basin geometry."""
 
@@ -159,23 +163,34 @@ class AttractorAssessment:
             policy=policy,
             free_energy_proxy=free_energy_proxy,
             source_ids=source_ids,
+            blanket=blanket,
         )
 
     def to_signal(self) -> MetaCogSignal:
         """Convert the assessment into a portable metacognitive control signal."""
 
+        metadata = {
+            "basin_id": self.state.basin_id,
+            "hidden_state": self.model.hidden_state,
+            "observation": self.model.observation,
+            "policy": self.policy.value,
+            "source_ids": ",".join(self.source_ids),
+        }
+        if self.blanket is not None:
+            metadata.update(
+                {
+                    "internal_states": ",".join(self.blanket.internal_states),
+                    "external_states": ",".join(self.blanket.external_states),
+                    "sensory_states": ",".join(self.blanket.sensory_states),
+                    "active_states": ",".join(self.blanket.active_states),
+                }
+            )
         return MetaCogSignal(
             name="attractor_control",
             value=self.free_energy_proxy,
             source="dionysus_metacog.attractors",
             confidence=_confidence_from_precision(self.model.precision),
-            metadata={
-                "basin_id": self.state.basin_id,
-                "hidden_state": self.model.hidden_state,
-                "observation": self.model.observation,
-                "policy": self.policy.value,
-                "source_ids": ",".join(self.source_ids),
-            },
+            metadata=metadata,
         )
 
 
