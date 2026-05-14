@@ -46,11 +46,32 @@ runtime adapter target, not a hard dependency.
 
 ```text
 dionysus_metacog/
+  framework/     # canonical layer stack and dependency contract
   core/          # controller signals, traces, promotion labels
   models/        # active-inference, POMDP, Markov blanket records
   attractors/    # attractor-state interfaces
   adapters/      # optional integration seams
   provenance/    # source attribution and model lineage
+```
+
+## Framework Layers
+
+The initial framework stack is intentionally explicit:
+
+1. `provenance` owns source attribution and model lineage.
+2. `generative_model` owns active-inference and POMDP model records.
+3. `boundary` owns Markov blanket boundary records.
+4. `dynamics` owns attractor-basin and dynamical-state observations.
+5. `control` owns metacognitive control signals and traces.
+6. `adapters` owns optional host-runtime integration seams.
+
+The default layer contract is available in code:
+
+```python
+from dionysus_metacog.framework import FrameworkSpec
+
+framework = FrameworkSpec.default()
+print(framework.dependency_graph)
 ```
 
 ## Status
