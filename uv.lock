@@ -12,7 +12,7 @@ wheels = [
 ]
 
 [[package]]
-name = "dionysus-metacog"
+name = "dionysus-metacognition"
 version = "0.1.0"
 source = { editable = "." }
 

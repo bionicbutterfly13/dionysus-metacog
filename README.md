@@ -3,7 +3,7 @@
 Dionysus MetaCog is an active-inference metacognitive controller kit for agent
 runtimes.
 
-It provides a public Python package, `dionysus-metacog`, with import root
+It provides a public Python package, `dionysus-metacognition`, with import root
 `dionysus_metacog`. The package is designed to expose metacognitive control
 primitives, model provenance, attractor-aware state tracking, and adapter seams
 for systems such as Hermes Agent, Autonoesis, Elume, Sakshi, and
@@ -12,7 +12,7 @@ linoss-dynamics.
 ## Install
 
 ```bash
-pip install dionysus-metacog
+pip install dionysus-metacognition
 ```
 
 ## Import
