@@ -74,6 +74,33 @@ framework = FrameworkSpec.default()
 print(framework.dependency_graph)
 ```
 
+## Attractor Sources
+
+Attractor-basin records must carry source backing. The initial source ledger
+connects the package to:
+
+- Friston, Sengupta, and Auletta's "Cognitive Dynamics: From Attractors to
+  Active Inference" (`https://doi.org/10.1109/JPROC.2014.2306251`).
+- Context-Engineering's attractor dynamics and attractor co-emergence protocol
+  shell lineage.
+- Spisak and Friston's PNI Lab article, "Self-orthogonalizing attractor neural
+  networks emerging from the free energy principle"
+  (`https://pni-lab.github.io/fep-attractor-network/`).
+
+```python
+from dionysus_metacog.attractors import AttractorBasin, default_attractor_sources
+
+sources = default_attractor_sources()
+basin = AttractorBasin(
+    basin_id="focused_attention",
+    attractor_label="focused attention",
+    depth=0.8,
+    width=0.6,
+    stability=0.9,
+    sources=(sources["friston-2014-cognitive-dynamics"],),
+)
+```
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and
