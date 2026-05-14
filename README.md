@@ -89,6 +89,7 @@ connects the package to:
 
 ```python
 from dionysus_metacog.attractors import AttractorBasin, default_attractor_sources
+from dionysus_metacog.models import PomdpStateRecord
 
 sources = default_attractor_sources()
 basin = AttractorBasin(
@@ -99,6 +100,23 @@ basin = AttractorBasin(
     stability=0.9,
     sources=(sources["friston-2014-cognitive-dynamics"],),
 )
+model = PomdpStateRecord(
+    hidden_state="focused",
+    observation="task_stable",
+    policy="continue",
+    expected_free_energy=0.1,
+    precision=0.9,
+)
+```
+
+Use `AttractorAssessment` when an attractor observation should become a
+portable metacognitive control signal:
+
+```python
+from dionysus_metacog.attractors import AttractorAssessment
+
+assessment = AttractorAssessment.from_basin(basin=basin, model=model)
+control_signal = assessment.to_signal()
 ```
 
 ## Status

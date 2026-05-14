@@ -1,6 +1,6 @@
-from dionysus_metacog import __version__
+from dionysus_metacog import AttractorAssessment, __version__
 from dionysus_metacog.adapters.hermes import HERMES_AGENT_ADAPTER_NAME
-from dionysus_metacog.attractors import AttractorState
+from dionysus_metacog.attractors import AttractorControlPolicy, AttractorState
 from dionysus_metacog.core import MetaCogSignal, MetaCogTrace, PromotionLabel
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
 from dionysus_metacog.provenance import SourceReference
@@ -8,6 +8,7 @@ from dionysus_metacog.provenance import SourceReference
 
 def test_import_root_version() -> None:
     assert __version__ == "0.1.0"
+    assert AttractorAssessment.__name__ == "AttractorAssessment"
 
 
 def test_core_records() -> None:
@@ -44,5 +45,6 @@ def test_adapter_and_provenance_records() -> None:
     )
 
     assert HERMES_AGENT_ADAPTER_NAME == "dionysus-metacog"
+    assert AttractorControlPolicy.HOLD == "hold"
     assert state.basin_id == "focused"
     assert source.locator == "Figure 6"

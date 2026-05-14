@@ -2,6 +2,18 @@
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from enum import StrEnum
+
+from dionysus_metacog.core import MetaCogSignal
+from dionysus_metacog.models import PomdpStateRecord
+
+
+class AttractorControlPolicy(StrEnum):
+    """Control stance selected from attractor and generative-model evidence."""
+
+    HOLD = "hold"
+    STABILIZE = "stabilize"
+    EXPLORE = "explore"
 
 
 @dataclass(frozen=True, slots=True)
@@ -90,6 +102,108 @@ class AttractorBasin:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class AttractorAssessment:
+    """Active-inference-facing assessment of an attractor observation."""
+
+    state: AttractorState
+    model: PomdpStateRecord
+    policy: AttractorControlPolicy
+    free_energy_proxy: float
+    source_ids: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.free_energy_proxy < 0.0:
+            raise ValueError("free_energy_proxy must be non-negative")
+        if not self.source_ids:
+            raise ValueError("source_ids must not be empty")
+        object.__setattr__(self, "source_ids", tuple(self.source_ids))
+
+    @classmethod
+    def from_basin(
+        cls,
+        *,
+        basin: AttractorBasin,
+        model: PomdpStateRecord,
+    ) -> "AttractorAssessment":
+        """Assess a source-backed basin against a POMDP-style model record."""
+
+        return cls.from_state(
+            state=basin.as_state(),
+            model=model,
+            source_ids=basin.source_ids,
+            novelty=basin.as_state().novelty,
+        )
+
+    @classmethod
+    def from_state(
+        cls,
+        *,
+        state: AttractorState,
+        model: PomdpStateRecord,
+        source_ids: tuple[str, ...],
+        novelty: float | None = None,
+    ) -> "AttractorAssessment":
+        """Assess a host-neutral attractor state without requiring basin geometry."""
+
+        observed_novelty = state.novelty if novelty is None else novelty
+        free_energy_proxy = _free_energy_proxy(state=state, model=model)
+        policy = _select_policy(
+            stability=state.stability,
+            novelty=observed_novelty,
+            free_energy_proxy=free_energy_proxy,
+        )
+        return cls(
+            state=state,
+            model=model,
+            policy=policy,
+            free_energy_proxy=free_energy_proxy,
+            source_ids=source_ids,
+        )
+
+    def to_signal(self) -> MetaCogSignal:
+        """Convert the assessment into a portable metacognitive control signal."""
+
+        return MetaCogSignal(
+            name="attractor_control",
+            value=self.free_energy_proxy,
+            source="dionysus_metacog.attractors",
+            confidence=_confidence_from_precision(self.model.precision),
+            metadata={
+                "basin_id": self.state.basin_id,
+                "hidden_state": self.model.hidden_state,
+                "observation": self.model.observation,
+                "policy": self.policy.value,
+                "source_ids": ",".join(self.source_ids),
+            },
+        )
+
+
+def _free_energy_proxy(*, state: AttractorState, model: PomdpStateRecord) -> float:
+    if model.expected_free_energy is not None:
+        return max(0.0, model.expected_free_energy)
+    return max(0.0, 1.0 - state.stability + state.novelty)
+
+
+def _select_policy(
+    *,
+    stability: float,
+    novelty: float,
+    free_energy_proxy: float,
+) -> AttractorControlPolicy:
+    if novelty >= 0.7:
+        return AttractorControlPolicy.EXPLORE
+    if stability <= 0.4 or free_energy_proxy >= 0.7:
+        return AttractorControlPolicy.STABILIZE
+    return AttractorControlPolicy.HOLD
+
+
+def _confidence_from_precision(precision: float | None) -> float:
+    if precision is None:
+        return 1.0
+    return min(1.0, max(0.0, precision))
+
+
 def default_attractor_sources() -> dict[str, AttractorSource]:
     """Return the initial source ledger for attractor-basin primitives."""
 
@@ -126,7 +240,9 @@ def default_attractor_sources() -> dict[str, AttractorSource]:
 
 
 __all__ = [
+    "AttractorAssessment",
     "AttractorBasin",
+    "AttractorControlPolicy",
     "AttractorSource",
     "AttractorState",
     "default_attractor_sources",
