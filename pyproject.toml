@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dionysus-metacog"
+version = "0.1.0"
+description = "Active-inference metacognitive controller kit for agent runtimes, with Hermes Agent adapter support."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+  { name = "Dr. Mani Saint-Victor" }
+]
+keywords = [
+  "active inference",
+  "agent metacognition",
+  "computational phenomenology",
+  "Hermes Agent",
+  "Markov blankets",
+  "POMDP",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/bionicbutterfly13/dionysus-metacog"
+Repository = "https://github.com/bionicbutterfly13/dionysus-metacog"
+Issues = "https://github.com/bionicbutterfly13/dionysus-metacog/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dionysus_metacog"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
