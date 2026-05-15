@@ -32,6 +32,7 @@ Scan scope for this pass:
 | `/Volumes/Asylum/dev/dionysus-metacog/src/dionysus_metacog/core/__init__.py` | Current portable signal and payload contract | Source of truth for package handoff payload |
 | `/Volumes/Asylum/dev/dionysus-metacog/src/dionysus_metacog/provenance/__init__.py` | Current source reference and ledger contract | Source of truth for attribution and lineage |
 | `/Volumes/Asylum/dev/dionysus-metacog/docs/thoughtseed-attractor-map.md` | Audit result for ThoughtSeed-to-attractor relationship | New cleanup artifact |
+| `/Volumes/Asylum/dev/dionysus-metacog/docs/cross-package-boundary-map.md` | Audit result for Autonoesis, Elume, Sakshi, and linoss-dynamics ownership boundaries | Source of truth for adjacent package adapter posture |
 
 ## Current Host Evidence
 
@@ -62,14 +63,24 @@ Scan scope for this pass:
 | `/Volumes/Asylum/repos/thoughtseeds_vipassana/learning_thoughtseeds_revised.py` | State-specific attractors shape ThoughtSeed activations | Prototype lineage only; do not copy code without license review |
 | `/Volumes/Asylum/repos/metatotai/docs/extraction-plan.md` | ThoughtSeed should be an optional adapter target, not a core dependency | Supports package boundary |
 
+## Adjacent Package Boundary Evidence
+
+| Path | What it proves | Cleanup disposition |
+| --- | --- | --- |
+| `/Volumes/Asylum/dev/autonoesis` | Owns self-modeling, computational phenomenology, meta-awareness, metacognitive feelings, transparency/opacity, agency, and ownership | Keep ontology in Autonoesis; use adapter only for self-model/meta-awareness context |
+| `/Volumes/Asylum/dev/elume` | Owns immutable ThoughtSeed records, EFE-style competition, prior-gated cognition, curiosity scoring, and replayable competition operations | Optional deterministic cognition adapter; no hard dependency |
+| `/Volumes/Asylum/dev/sakshi` | Owns witness/gating/verification surfaces, expectation checking, write guards, plan soundness, intervention validation, and monitor-assess-control flow | Optional witness/gate adapter; do not move host policy into Sakshi |
+| `/Volumes/Asylum/dev/linoss-dynamics` | Owns oscillator trajectories, stability diagnostics, energy/convergence signals, Kalman filtering, smoothing, and fitted latent dynamics | Optional numerical substrate for basin movement; no metacognitive policy ownership |
+
 ## Missing Or Unresolved
 
 | Path or item | Status | Next cleanup action |
 | --- | --- | --- |
 | `/Volumes/Asylum/dev/thoughtseeds` | Not present on disk during this pass | Locate package elsewhere or remove stale references from future plans |
 | `thoughtseed-active-inference` package | Mentioned by Dionysus2.0 extraction notes, not verified locally | Check PyPI/GitHub only if needed before adapter work |
-| Elume `ThoughtSeed` model | Referenced by MetaToTAI plan, not audited in this pass | Inspect `/Volumes/Asylum/dev/elume` before writing Elume adapter |
 | Thoughtseeds Vipassana prototype license | GitHub repository metadata reports `license: null`; no local LICENSE file found; raw `LICENSE` URLs returned 404; paper is CC BY 4.0 but code has no explicit software license | Treat as design evidence only until software license is verified |
+| Autonoesis stale-shadow risk | `/Volumes/Asylum/dev/autonoesis/src/autonoesis/models.py` duplicates the active package directory `/Volumes/Asylum/dev/autonoesis/src/autonoesis/models/` | Track in Autonoesis cleanup, not this package |
+| Sakshi README version drift | Sakshi package metadata says `0.12.0`; README status still says `0.11.0 pre-1.0` | Track in Sakshi cleanup, not this package |
 
 ## Cleanup Decisions So Far
 
@@ -81,13 +92,16 @@ Scan scope for this pass:
 6. Treat missing extraction paths as unresolved until verified.
 7. Treat the Thoughtseeds Vipassana prototype as attributed paper/prototype
    lineage only unless code reuse is explicitly cleared.
+8. Keep adjacent packages out of core dependencies; add optional adapters only
+   when tests prove a stable translation boundary.
 
 ## Next Inventory Pass
 
-Before implementing a ThoughtSeed adapter, audit these in order:
+Before implementing adapters:
 
-1. `/Volumes/Asylum/dev/elume` for any current `ThoughtSeed` model.
-2. `/Volumes/Asylum/dev/autonoesis` for overlap with self-model or meta-awareness ownership.
-3. `/Volumes/Asylum/dev/sakshi` for witness/gating boundaries.
-4. `/Volumes/Asylum/dev/linoss-dynamics` for oscillator/trajectory data that may feed basin movement.
-5. Any restored `thoughtseed-active-inference` repo/package if located.
+1. Start with Elume for ThoughtSeed/EFE competition.
+2. Add Sakshi next for witness/gating validation.
+3. Add linoss-dynamics only when basin movement needs trajectory/stability math.
+4. Add Autonoesis only for self-model/meta-awareness context.
+5. Locate any restored `thoughtseed-active-inference` repo/package before
+   referencing it as available source.

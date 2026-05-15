@@ -133,6 +133,20 @@ turn those into ThoughtSeed candidates. That supports the same design choice
 here: keep the core package neutral, and add a small adapter/protocol layer
 for host-specific ThoughtSeed shapes.
 
+### Elume Boundary
+
+`/Volumes/Asylum/dev/elume/src/elume/models/thought.py` now confirms that Elume
+has its own immutable `ThoughtSeed` model, including thought layers, Markov
+blanket tags, activation, basin/source metadata, reinforcement, and child-spawn
+semantics. Elume also owns deterministic thought competition, EFE-style result
+records, prior-gated cognition, curiosity scoring, and replayable envelope
+operations.
+
+That makes Elume the strongest optional adapter target for actual ThoughtSeed
+execution. It does not change this package's core rule: `dionysus-metacognition`
+should translate Elume outputs into `AttractorAssessment` and `MetaCogPayload`,
+not import Elume as a required runtime dependency.
+
 ## Mapping Into Dionysus Metacognition
 
 | ThoughtSeed field or behavior | Package target |
