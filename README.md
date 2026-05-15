@@ -230,6 +230,30 @@ guard_payload = meta_payload_to_write_guard_payload(payload)
 This lets Sakshi validate or witness a metacognitive control signal without
 making Sakshi a hard dependency of this package.
 
+## linoss-dynamics Adapter
+
+The linoss-dynamics adapter is optional and structural. It converts numerical
+trajectory, stability, and filtering outputs into package-native attractor and
+POMDP records without importing linoss-dynamics at module import time.
+
+```python
+from dionysus_metacog.adapters.linoss import (
+    linoss_filter_to_pomdp_record,
+    linoss_metrics_to_attractor_state,
+)
+
+state = linoss_metrics_to_attractor_state(metrics, basin_id="trajectory-basin")
+model = linoss_filter_to_pomdp_record(
+    filter_result,
+    hidden_state="latent_basin_state",
+    observation="trajectory_observation",
+    policy="stabilize",
+)
+```
+
+This keeps linoss-dynamics as the oscillator and trajectory substrate while
+`dionysus-metacognition` stays focused on basin movement and control payloads.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and
