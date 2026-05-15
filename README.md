@@ -1,7 +1,7 @@
-# Dionysus MetaCog
+# Dionysus Metacognition
 
-Dionysus MetaCog is an active-inference metacognitive controller kit for agent
-runtimes.
+Dionysus Metacognition is an active-inference metacognitive controller kit for
+agent runtimes.
 
 It provides a public Python package, `dionysus-metacognition`, with import root
 `dionysus_metacog`. The package is designed to expose metacognitive control
@@ -30,11 +30,11 @@ import dionysus_metacog as metacog
 
 ## Scope
 
-Dionysus MetaCog is not a generic `utils` package and is not the ontology owner
-for phenomenological self-modeling. It is the applied metacognitive controller
-layer: the place where active-inference control signals, POMDP-style model
-records, Markov blanket boundaries, attractor-aware runtime observations, and
-adapter seams can be assembled without polluting host projects.
+Dionysus Metacognition is not a generic `utils` package and is not the ontology
+owner for phenomenological self-modeling. It is the applied metacognitive
+controller layer: the place where active-inference control signals, POMDP-style
+model records, Markov blanket boundaries, attractor-aware runtime observations,
+and adapter seams can be assembled without polluting host projects.
 
 Autonoesis should remain the self-model and computational-phenomenology kernel.
 Elume should remain the deterministic replay and competition substrate.
