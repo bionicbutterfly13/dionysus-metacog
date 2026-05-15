@@ -26,9 +26,12 @@ payload.
 The prototype is tied to the paper "Thoughtseeds Framework: A Hierarchical and
 Agentic Framework for Investigating Thought Dynamics in Meditative States" by
 Prakash Chandra Kavi, Gorka Zamora-Lopez, Daniel Ari Friedman, and Gustavo
-Patow. The local checkout did not contain a LICENSE file during this audit, so
-this package treats it as cited design lineage only. Do not copy or adapt code
-from that prototype without a separate licensing and attribution pass.
+Patow. GitHub repository metadata reported no detected software license, the
+local checkout did not contain a LICENSE file, and raw LICENSE URLs returned
+404 during this audit. The paper is CC BY 4.0, but the code repository has no
+explicit software license, so this package treats it as cited design lineage
+only. Do not copy or adapt code from that prototype without a separate
+licensing and attribution pass.
 
 `/Volumes/Asylum/repos/thoughtseeds_vipassana/thoughtseed_network.py` models
 ThoughtSeeds as individual agents with activation dynamics. The network updates

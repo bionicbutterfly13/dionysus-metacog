@@ -69,7 +69,7 @@ Scan scope for this pass:
 | `/Volumes/Asylum/dev/thoughtseeds` | Not present on disk during this pass | Locate package elsewhere or remove stale references from future plans |
 | `thoughtseed-active-inference` package | Mentioned by Dionysus2.0 extraction notes, not verified locally | Check PyPI/GitHub only if needed before adapter work |
 | Elume `ThoughtSeed` model | Referenced by MetaToTAI plan, not audited in this pass | Inspect `/Volumes/Asylum/dev/elume` before writing Elume adapter |
-| Thoughtseeds Vipassana prototype license | No local LICENSE file found in `/Volumes/Asylum/repos/thoughtseeds_vipassana` during this pass | Treat as design evidence only until license is verified |
+| Thoughtseeds Vipassana prototype license | GitHub repository metadata reports `license: null`; no local LICENSE file found; raw `LICENSE` URLs returned 404; paper is CC BY 4.0 but code has no explicit software license | Treat as design evidence only until software license is verified |
 
 ## Cleanup Decisions So Far
 

@@ -18,7 +18,13 @@ The local prototype audited during cleanup is:
   Meditative States. Entropy 2025, 27, 459.
   https://doi.org/10.3390/e27050459
 
-The prototype checkout did not contain a local LICENSE file during this audit.
+License findings during this audit:
+
+- GitHub repository metadata reported `license: null`.
+- `LICENSE` was not present in the local checkout.
+- Raw `LICENSE` URLs for `main` and `master` returned 404.
+- The paper is open access under CC BY 4.0, but that does not by itself grant
+  a software license for the repository code.
 
 ## Usage Rule
 
