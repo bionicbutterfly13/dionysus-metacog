@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dionysus-metacognition"
-version = "0.1.1"
+version = "0.2.0"
 description = "Active-inference metacognitive controller kit for agent runtimes, with Hermes Agent adapter support."
 readme = "README.md"
 requires-python = ">=3.11"
