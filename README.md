@@ -211,6 +211,25 @@ payload = assessment.to_payload()
 This keeps Elume as a deterministic cognition substrate while
 `dionysus-metacognition` remains the portable control and provenance layer.
 
+## Sakshi Adapter
+
+The Sakshi adapter is also optional and structural. It converts emitted
+metacognitive payloads into Sakshi-compatible dictionaries for witness events,
+write-guard checks, control actions, and dominant ThoughtSeed snapshots.
+
+```python
+from dionysus_metacog.adapters.sakshi import (
+    meta_payload_to_control_action,
+    meta_payload_to_write_guard_payload,
+)
+
+control_action = meta_payload_to_control_action(payload)
+guard_payload = meta_payload_to_write_guard_payload(payload)
+```
+
+This lets Sakshi validate or witness a metacognitive control signal without
+making Sakshi a hard dependency of this package.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and
