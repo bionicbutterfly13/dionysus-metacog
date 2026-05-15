@@ -93,6 +93,20 @@ The emitted metadata is string-only so adapters can pass it through systems
 such as Hermes Agent without taking a hard dependency on this package's Python
 objects.
 
+## Payload Contract
+
+`MetaCogPayload` is the generic handoff contract for host runtimes. It wraps a
+`MetaCogSignal` with JSON-safe `provenance`, `boundary`, and `context` sections
+without naming or importing any specific host adapter.
+
+```python
+payload = assessment.to_payload(ledger=ledger)
+as_dict = payload.as_dict()
+```
+
+The payload dictionary is safe to pass through queues, logs, HTTP APIs, CLIs, or
+runtime adapters that need a stable metacognitive control envelope.
+
 ## Attractor Sources
 
 Attractor-basin records must carry source backing. The initial source ledger

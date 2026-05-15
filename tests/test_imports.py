@@ -1,6 +1,7 @@
 from dionysus_metacog import (
     AttractorAssessment,
     AttractorTransition,
+    MetaCogPayload,
     ProvenanceLedger,
     __version__,
 )
@@ -15,6 +16,7 @@ def test_import_root_version() -> None:
     assert __version__ == "0.1.1"
     assert AttractorAssessment.__name__ == "AttractorAssessment"
     assert AttractorTransition.__name__ == "AttractorTransition"
+    assert MetaCogPayload.__name__ == "MetaCogPayload"
     assert ProvenanceLedger.__name__ == "ProvenanceLedger"
 
 

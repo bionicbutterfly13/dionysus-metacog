@@ -11,7 +11,12 @@ from dionysus_metacog.attractors import (
     AttractorTransitionLabel,
     default_attractor_sources,
 )
-from dionysus_metacog.core import MetaCogSignal, MetaCogTrace, PromotionLabel
+from dionysus_metacog.core import (
+    MetaCogPayload,
+    MetaCogSignal,
+    MetaCogTrace,
+    PromotionLabel,
+)
 from dionysus_metacog.framework import FrameworkLayer, FrameworkSpec, LayerSpec
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
 from dionysus_metacog.provenance import (
@@ -32,6 +37,7 @@ __all__ = [
     "AttractorTransition",
     "AttractorTransitionLabel",
     "MarkovBlanketRecord",
+    "MetaCogPayload",
     "MetaCogSignal",
     "MetaCogTrace",
     "PomdpStateRecord",

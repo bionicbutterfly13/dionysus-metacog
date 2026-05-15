@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 
-from dionysus_metacog.core import MetaCogSignal
+from dionysus_metacog.core import JsonValue, MetaCogPayload, MetaCogSignal
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
 from dionysus_metacog.provenance import ProvenanceLedger, SourceReference
 
@@ -271,6 +271,26 @@ class AttractorAssessment:
             metadata=metadata,
         )
 
+    def to_payload(self, ledger: ProvenanceLedger | None = None) -> MetaCogPayload:
+        """Convert the assessment into a host-neutral JSON-safe payload."""
+
+        return MetaCogPayload.from_signal(
+            self.to_signal(ledger=ledger),
+            payload_type="metacog.attractor_assessment",
+            provenance=_provenance_payload(
+                source_ids=self.source_ids,
+                ledger=ledger,
+            ),
+            boundary=_boundary_payload(self.blanket),
+            context={
+                "basin_id": self.state.basin_id,
+                "hidden_state": self.model.hidden_state,
+                "observation": self.model.observation,
+                "policy": self.policy.value,
+                "free_energy_proxy": self.free_energy_proxy,
+            },
+        )
+
 
 def _free_energy_proxy(*, state: AttractorState, model: PomdpStateRecord) -> float:
     base_proxy: float
@@ -316,6 +336,37 @@ def _precision_uncertainty_factor(precision: float | None) -> float:
 
 def _format_float(value: float) -> str:
     return f"{value:.6f}".rstrip("0").rstrip(".")
+
+
+def _provenance_payload(
+    *,
+    source_ids: tuple[str, ...],
+    ledger: ProvenanceLedger | None,
+) -> dict[str, JsonValue]:
+    payload: dict[str, JsonValue] = {"source_ids": source_ids}
+    if ledger is None:
+        return payload
+    payload["sources"] = tuple(
+        {
+            "source_id": source.source_id,
+            "title": source.title,
+            "locator": source.locator,
+            "url": source.url,
+        }
+        for source in ledger.resolve(source_ids)
+    )
+    return payload
+
+
+def _boundary_payload(blanket: MarkovBlanketRecord | None) -> dict[str, JsonValue]:
+    if blanket is None:
+        return {}
+    return {
+        "internal_states": tuple(blanket.internal_states),
+        "external_states": tuple(blanket.external_states),
+        "sensory_states": tuple(blanket.sensory_states),
+        "active_states": tuple(blanket.active_states),
+    }
 
 
 def _merge_source_ids(*source_id_groups: tuple[str, ...]) -> tuple[str, ...]:
