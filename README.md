@@ -87,6 +87,10 @@ connects the package to:
   networks emerging from the free energy principle"
   (`https://pni-lab.github.io/fep-attractor-network/`).
 
+Attractor source records use the shared `SourceReference` provenance contract,
+so source attribution stays consistent across attractor, model, and future
+adapter layers.
+
 ```python
 from dionysus_metacog.attractors import AttractorBasin, default_attractor_sources
 from dionysus_metacog.models import PomdpStateRecord

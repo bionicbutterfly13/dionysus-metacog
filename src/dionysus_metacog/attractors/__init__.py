@@ -6,6 +6,7 @@ from enum import StrEnum
 
 from dionysus_metacog.core import MetaCogSignal
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
+from dionysus_metacog.provenance import SourceReference
 
 
 class AttractorControlPolicy(StrEnum):
@@ -34,22 +35,8 @@ class AttractorState:
             raise ValueError("novelty must be non-negative")
 
 
-@dataclass(frozen=True, slots=True)
-class AttractorSource:
+class AttractorSource(SourceReference):
     """Source record backing an attractor construct."""
-
-    source_id: str
-    title: str
-    locator: str
-    url: str | None = None
-
-    def __post_init__(self) -> None:
-        if not self.source_id:
-            raise ValueError("source_id must not be empty")
-        if not self.title:
-            raise ValueError("title must not be empty")
-        if not self.locator:
-            raise ValueError("locator must not be empty")
 
 
 @dataclass(frozen=True, slots=True)

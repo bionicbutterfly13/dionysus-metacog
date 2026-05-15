@@ -5,11 +5,13 @@ from dionysus_metacog.attractors import (
     AttractorSource,
     default_attractor_sources,
 )
+from dionysus_metacog.provenance import SourceReference
 
 
 def test_default_attractor_sources_include_formal_and_protocol_lineage() -> None:
     sources = default_attractor_sources()
 
+    assert isinstance(sources["friston-2014-cognitive-dynamics"], SourceReference)
     assert sources["friston-2014-cognitive-dynamics"].title == (
         "Cognitive Dynamics: From Attractors to Active Inference"
     )
@@ -22,6 +24,16 @@ def test_default_attractor_sources_include_formal_and_protocol_lineage() -> None
     assert sources["spisak-friston-fep-attractor-network"].url == (
         "https://pni-lab.github.io/fep-attractor-network/"
     )
+
+
+def test_attractor_source_uses_provenance_reference_contract() -> None:
+    source = AttractorSource(
+        source_id="test-source",
+        title="Test Source",
+        locator="test locator",
+    )
+
+    assert isinstance(source, SourceReference)
 
 
 def test_attractor_basin_requires_source_backing() -> None:
