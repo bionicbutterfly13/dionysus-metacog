@@ -278,6 +278,13 @@ payload = enrich_payload_with_self_model(
 This lets host runtimes carry Autonoesis context alongside metacognitive
 control payloads without moving self-model ontology into this package.
 
+## Adapter Pipeline
+
+See `docs/adapter-pipeline.md` for the full optional-adapter flow across Elume,
+linoss-dynamics, Autonoesis, and Sakshi. The short rule is: adjacent packages
+own execution and ontology; Dionysus Metacognition owns portable records,
+control assessment, provenance, and payload translation.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and

@@ -58,3 +58,16 @@ def test_adapter_and_provenance_records() -> None:
     assert AttractorControlPolicy.ATTENUATE == "attenuate"
     assert state.basin_id == "focused"
     assert source.locator == "Figure 6"
+
+
+def test_optional_adapter_modules_import_without_adjacent_packages() -> None:
+    from dionysus_metacog.adapters import autonoesis, elume, linoss, sakshi
+
+    assert autonoesis.SelfModelLike.__name__ == "SelfModelLike"
+    assert elume.ThoughtSeedLike.__name__ == "ThoughtSeedLike"
+    assert linoss.linoss_metrics_to_attractor_state.__name__ == (
+        "linoss_metrics_to_attractor_state"
+    )
+    assert sakshi.meta_payload_to_control_action.__name__ == (
+        "meta_payload_to_control_action"
+    )

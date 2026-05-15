@@ -62,6 +62,9 @@ def thoughtseed_to_attractor_state(
 def efe_result_to_pomdp_record(result: EFEResultLike) -> PomdpStateRecord:
     """Convert an Elume-style EFE result into a POMDP-style state record."""
 
+    if isinstance(result, PomdpStateRecord):
+        return result
+
     return PomdpStateRecord(
         hidden_state=result.hidden_state,
         observation=result.observation,
