@@ -1,4 +1,9 @@
-from dionysus_metacog import AttractorAssessment, ProvenanceLedger, __version__
+from dionysus_metacog import (
+    AttractorAssessment,
+    AttractorTransition,
+    ProvenanceLedger,
+    __version__,
+)
 from dionysus_metacog.adapters.hermes import HERMES_AGENT_ADAPTER_NAME
 from dionysus_metacog.attractors import AttractorControlPolicy, AttractorState
 from dionysus_metacog.core import MetaCogSignal, MetaCogTrace, PromotionLabel
@@ -9,6 +14,7 @@ from dionysus_metacog.provenance import SourceReference
 def test_import_root_version() -> None:
     assert __version__ == "0.1.1"
     assert AttractorAssessment.__name__ == "AttractorAssessment"
+    assert AttractorTransition.__name__ == "AttractorTransition"
     assert ProvenanceLedger.__name__ == "ProvenanceLedger"
 
 

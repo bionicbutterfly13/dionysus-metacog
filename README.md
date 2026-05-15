@@ -147,6 +147,31 @@ When available, a `MarkovBlanketRecord` can be passed into
 internal, external, sensory, and active-state boundary context alongside the
 POMDP observation.
 
+## Attractor Lifecycle
+
+`AttractorObservation` and `AttractorTransition` describe how source-backed
+basin states change over time. The transition classifier is deterministic and
+intentionally small: it labels observations as `entered`, `held`,
+`destabilized`, `escaped`, or `merged` while preserving source IDs across the
+lifecycle.
+
+```python
+from dionysus_metacog.attractors import (
+    AttractorObservation,
+    AttractorTransition,
+)
+
+prior = AttractorObservation(state=basin.as_state(), source_ids=basin.source_ids)
+current = AttractorObservation(
+    state=basin.as_state(),
+    source_ids=basin.source_ids,
+)
+transition = AttractorTransition.from_observations(
+    prior=prior,
+    current=current,
+)
+```
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and

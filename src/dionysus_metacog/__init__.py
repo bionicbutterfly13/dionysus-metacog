@@ -4,8 +4,11 @@ from dionysus_metacog.attractors import (
     AttractorAssessment,
     AttractorBasin,
     AttractorControlPolicy,
+    AttractorObservation,
     AttractorSource,
     AttractorState,
+    AttractorTransition,
+    AttractorTransitionLabel,
     default_attractor_sources,
 )
 from dionysus_metacog.core import MetaCogSignal, MetaCogTrace, PromotionLabel
@@ -23,8 +26,11 @@ __all__ = [
     "AttractorAssessment",
     "AttractorBasin",
     "AttractorControlPolicy",
+    "AttractorObservation",
     "AttractorSource",
     "AttractorState",
+    "AttractorTransition",
+    "AttractorTransitionLabel",
     "MarkovBlanketRecord",
     "MetaCogSignal",
     "MetaCogTrace",

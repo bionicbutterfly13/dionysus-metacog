@@ -17,6 +17,16 @@ class AttractorControlPolicy(StrEnum):
     EXPLORE = "explore"
 
 
+class AttractorTransitionLabel(StrEnum):
+    """Lifecycle transition label for attractor observations."""
+
+    ENTERED = "entered"
+    HELD = "held"
+    DESTABILIZED = "destabilized"
+    ESCAPED = "escaped"
+    MERGED = "merged"
+
+
 @dataclass(frozen=True, slots=True)
 class AttractorState:
     """Host-neutral description of an attractor basin observation."""
@@ -37,6 +47,75 @@ class AttractorState:
 
 class AttractorSource(SourceReference):
     """Source record backing an attractor construct."""
+
+
+@dataclass(frozen=True, slots=True)
+class AttractorObservation:
+    """Source-backed observation of a basin state at one lifecycle step."""
+
+    state: AttractorState
+    source_ids: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not self.source_ids:
+            raise ValueError("source_ids must not be empty")
+        object.__setattr__(self, "source_ids", tuple(dict.fromkeys(self.source_ids)))
+
+
+@dataclass(frozen=True, slots=True)
+class AttractorTransition:
+    """Deterministic transition between attractor observations."""
+
+    prior: AttractorObservation | None
+    current: AttractorObservation
+    label: AttractorTransitionLabel
+    stability_delta: float = 0.0
+    novelty_delta: float = 0.0
+    drift: float = 0.0
+    source_ids: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.drift < 0.0:
+            raise ValueError("drift must be non-negative")
+        if not self.source_ids:
+            raise ValueError("source_ids must not be empty")
+        object.__setattr__(self, "source_ids", tuple(dict.fromkeys(self.source_ids)))
+
+    @classmethod
+    def from_observations(
+        cls,
+        *,
+        prior: AttractorObservation | None,
+        current: AttractorObservation,
+    ) -> "AttractorTransition":
+        """Classify a transition between source-backed attractor observations."""
+
+        if prior is None:
+            return cls(
+                prior=None,
+                current=current,
+                label=AttractorTransitionLabel.ENTERED,
+                source_ids=current.source_ids,
+            )
+
+        stability_delta = current.state.stability - prior.state.stability
+        novelty_delta = current.state.novelty - prior.state.novelty
+        drift = abs(stability_delta) + abs(novelty_delta)
+        source_ids = _merge_source_ids(prior.source_ids, current.source_ids)
+        label = _select_transition_label(
+            prior=prior,
+            current=current,
+            stability_delta=stability_delta,
+        )
+        return cls(
+            prior=prior,
+            current=current,
+            label=label,
+            stability_delta=stability_delta,
+            novelty_delta=novelty_delta,
+            drift=drift,
+            source_ids=source_ids,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -208,6 +287,30 @@ def _confidence_from_precision(precision: float | None) -> float:
     return min(1.0, max(0.0, precision))
 
 
+def _merge_source_ids(*source_id_groups: tuple[str, ...]) -> tuple[str, ...]:
+    merged: dict[str, None] = {}
+    for source_ids in source_id_groups:
+        for source_id in source_ids:
+            merged[source_id] = None
+    return tuple(merged)
+
+
+def _select_transition_label(
+    *,
+    prior: AttractorObservation,
+    current: AttractorObservation,
+    stability_delta: float,
+) -> AttractorTransitionLabel:
+    if prior.state.basin_id != current.state.basin_id:
+        shared_sources = set(prior.source_ids).intersection(current.source_ids)
+        if shared_sources:
+            return AttractorTransitionLabel.MERGED
+        return AttractorTransitionLabel.ESCAPED
+    if current.state.stability <= 0.4 or stability_delta <= -0.3:
+        return AttractorTransitionLabel.DESTABILIZED
+    return AttractorTransitionLabel.HELD
+
+
 def default_attractor_sources() -> dict[str, AttractorSource]:
     """Return the initial source ledger for attractor-basin primitives."""
 
@@ -247,7 +350,10 @@ __all__ = [
     "AttractorAssessment",
     "AttractorBasin",
     "AttractorControlPolicy",
+    "AttractorObservation",
     "AttractorSource",
     "AttractorState",
+    "AttractorTransition",
+    "AttractorTransitionLabel",
     "default_attractor_sources",
 ]
