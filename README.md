@@ -285,6 +285,14 @@ linoss-dynamics, Autonoesis, and Sakshi. The short rule is: adjacent packages
 own execution and ontology; Dionysus Metacognition owns portable records,
 control assessment, provenance, and payload translation.
 
+Runnable host-runtime examples live in `examples/`:
+
+```bash
+python examples/host_runtime_pipeline.py
+python examples/elume_to_sakshi.py
+python examples/linoss_state_input.py
+```
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and

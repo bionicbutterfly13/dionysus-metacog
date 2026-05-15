@@ -40,6 +40,12 @@ payload = enrich_payload_with_self_model(payload, self_model=self_model)
 guard_payload = meta_payload_to_write_guard_payload(payload)
 ```
 
+Runnable versions live under `examples/`:
+
+- `examples/host_runtime_pipeline.py`
+- `examples/elume_to_sakshi.py`
+- `examples/linoss_state_input.py`
+
 ## What Each Adapter Owns
 
 | Adapter | Input | Output | Boundary |
