@@ -25,7 +25,7 @@ from dionysus_metacog.provenance import (
     SourceReference,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "AttractorAssessment",
