@@ -15,6 +15,8 @@ class AttractorControlPolicy(StrEnum):
     HOLD = "hold"
     STABILIZE = "stabilize"
     EXPLORE = "explore"
+    ATTENUATE = "attenuate"
+    ESCALATE = "escalate"
 
 
 class AttractorTransitionLabel(StrEnum):
@@ -222,6 +224,7 @@ class AttractorAssessment:
             stability=state.stability,
             novelty=observed_novelty,
             free_energy_proxy=free_energy_proxy,
+            precision=model.precision,
         )
         return cls(
             state=state,
@@ -241,7 +244,14 @@ class AttractorAssessment:
             "observation": self.model.observation,
             "policy": self.policy.value,
             "source_ids": ",".join(self.source_ids),
+            "free_energy_proxy": _format_float(self.free_energy_proxy),
         }
+        if self.model.expected_free_energy is not None:
+            metadata["expected_free_energy"] = _format_float(
+                self.model.expected_free_energy
+            )
+        if self.model.precision is not None:
+            metadata["precision"] = _format_float(self.model.precision)
         if ledger is not None:
             metadata.update(ledger.metadata_for(self.source_ids))
         if self.blanket is not None:
@@ -263,9 +273,15 @@ class AttractorAssessment:
 
 
 def _free_energy_proxy(*, state: AttractorState, model: PomdpStateRecord) -> float:
+    base_proxy: float
     if model.expected_free_energy is not None:
-        return max(0.0, model.expected_free_energy)
-    return max(0.0, 1.0 - state.stability + state.novelty)
+        base_proxy = model.expected_free_energy
+    else:
+        base_proxy = 1.0 - state.stability + state.novelty
+    weighted_proxy = max(0.0, base_proxy) * _precision_uncertainty_factor(
+        model.precision
+    )
+    return round(weighted_proxy, 6)
 
 
 def _select_policy(
@@ -273,7 +289,12 @@ def _select_policy(
     stability: float,
     novelty: float,
     free_energy_proxy: float,
+    precision: float | None,
 ) -> AttractorControlPolicy:
+    if free_energy_proxy >= 1.0:
+        return AttractorControlPolicy.ESCALATE
+    if novelty >= 0.7 and _confidence_from_precision(precision) >= 0.75:
+        return AttractorControlPolicy.ATTENUATE
     if novelty >= 0.7:
         return AttractorControlPolicy.EXPLORE
     if stability <= 0.4 or free_energy_proxy >= 0.7:
@@ -285,6 +306,16 @@ def _confidence_from_precision(precision: float | None) -> float:
     if precision is None:
         return 1.0
     return min(1.0, max(0.0, precision))
+
+
+def _precision_uncertainty_factor(precision: float | None) -> float:
+    if precision is None:
+        return 1.0
+    return 2.0 - _confidence_from_precision(precision)
+
+
+def _format_float(value: float) -> str:
+    return f"{value:.6f}".rstrip("0").rstrip(".")
 
 
 def _merge_source_ids(*source_id_groups: tuple[str, ...]) -> tuple[str, ...]:

@@ -142,6 +142,11 @@ assessment = AttractorAssessment.from_basin(basin=basin, model=model)
 control_signal = assessment.to_signal()
 ```
 
+The assessment computes a deterministic, precision-weighted free-energy proxy.
+Its control policies are `hold`, `stabilize`, `explore`, `attenuate`, and
+`escalate`. Signal metadata includes the selected policy, source IDs, the
+free-energy proxy, and any available expected-free-energy or precision values.
+
 When available, a `MarkovBlanketRecord` can be passed into
 `AttractorAssessment.from_basin(...)` so the emitted control signal carries the
 internal, external, sensory, and active-state boundary context alongside the

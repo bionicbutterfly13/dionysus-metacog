@@ -53,5 +53,6 @@ def test_adapter_and_provenance_records() -> None:
 
     assert HERMES_AGENT_ADAPTER_NAME == "dionysus-metacog"
     assert AttractorControlPolicy.HOLD == "hold"
+    assert AttractorControlPolicy.ATTENUATE == "attenuate"
     assert state.basin_id == "focused"
     assert source.locator == "Figure 6"

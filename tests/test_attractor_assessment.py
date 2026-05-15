@@ -27,7 +27,7 @@ def test_stable_low_free_energy_basin_holds_policy() -> None:
     assessment = AttractorAssessment.from_basin(basin=basin, model=pomdp)
 
     assert assessment.policy == AttractorControlPolicy.HOLD
-    assert assessment.free_energy_proxy == 0.1
+    assert assessment.free_energy_proxy == 0.11
     assert assessment.to_signal().metadata["policy"] == "hold"
 
 
@@ -50,7 +50,7 @@ def test_unstable_high_free_energy_basin_requests_stabilization() -> None:
 
     assessment = AttractorAssessment.from_basin(basin=basin, model=pomdp)
 
-    assert assessment.policy == AttractorControlPolicy.STABILIZE
+    assert assessment.policy == AttractorControlPolicy.ESCALATE
     assert assessment.to_signal().name == "attractor_control"
     assert assessment.to_signal().confidence == 0.3
 
