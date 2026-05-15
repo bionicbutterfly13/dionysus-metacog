@@ -254,6 +254,30 @@ model = linoss_filter_to_pomdp_record(
 This keeps linoss-dynamics as the oscillator and trajectory substrate while
 `dionysus-metacognition` stays focused on basin movement and control payloads.
 
+## Autonoesis Adapter
+
+The Autonoesis adapter is optional and structural. It treats Autonoesis as the
+self-model and phenomenology owner, then translates self-model snapshots,
+meta-awareness states, and metacognitive feelings into payload context or
+signals.
+
+```python
+from dionysus_metacog.adapters.autonoesis import (
+    enrich_payload_with_self_model,
+    meta_awareness_to_signal,
+)
+
+signal = meta_awareness_to_signal(meta_awareness)
+payload = enrich_payload_with_self_model(
+    payload,
+    self_model=self_model,
+    meta_awareness=meta_awareness,
+)
+```
+
+This lets host runtimes carry Autonoesis context alongside metacognitive
+control payloads without moving self-model ontology into this package.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and
