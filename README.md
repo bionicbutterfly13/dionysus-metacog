@@ -191,6 +191,26 @@ transition = AttractorTransition.from_observations(
 )
 ```
 
+## Elume Adapter
+
+The Elume adapter is optional and structural. It does not import Elume at module
+import time; it accepts Elume-shaped objects or compatible test doubles and
+converts them into package-native records.
+
+```python
+from dionysus_metacog.adapters.elume import thoughtseed_winner_to_assessment
+
+assessment = thoughtseed_winner_to_assessment(
+    seed,
+    efe_result,
+    source_ids=("elume-thought-competition",),
+)
+payload = assessment.to_payload()
+```
+
+This keeps Elume as a deterministic cognition substrate while
+`dionysus-metacognition` remains the portable control and provenance layer.
+
 ## Status
 
 This is the initial public package skeleton. The API is intentionally small and
