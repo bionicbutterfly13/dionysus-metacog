@@ -11,6 +11,11 @@ from dionysus_metacog.attractors import (
 from dionysus_metacog.core import MetaCogSignal, MetaCogTrace, PromotionLabel
 from dionysus_metacog.framework import FrameworkLayer, FrameworkSpec, LayerSpec
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
+from dionysus_metacog.provenance import (
+    ProvenanceLedger,
+    SourceConflictError,
+    SourceReference,
+)
 
 __version__ = "0.1.1"
 
@@ -25,6 +30,9 @@ __all__ = [
     "MetaCogTrace",
     "PomdpStateRecord",
     "PromotionLabel",
+    "ProvenanceLedger",
+    "SourceConflictError",
+    "SourceReference",
     "FrameworkLayer",
     "FrameworkSpec",
     "LayerSpec",

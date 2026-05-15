@@ -74,6 +74,25 @@ framework = FrameworkSpec.default()
 print(framework.dependency_graph)
 ```
 
+## Provenance Ledger
+
+`ProvenanceLedger` is the source registry for framework records. It stores
+`SourceReference` objects by `source_id`, accepts exact duplicate references,
+and rejects conflicting duplicates so source lineage fails loudly instead of
+silently drifting.
+
+```python
+from dionysus_metacog.attractors import default_attractor_sources
+from dionysus_metacog.provenance import ProvenanceLedger
+
+ledger = ProvenanceLedger.from_sources(default_attractor_sources().values())
+metadata = ledger.metadata_for(("friston-2014-cognitive-dynamics",))
+```
+
+The emitted metadata is string-only so adapters can pass it through systems
+such as Hermes Agent without taking a hard dependency on this package's Python
+objects.
+
 ## Attractor Sources
 
 Attractor-basin records must carry source backing. The initial source ledger

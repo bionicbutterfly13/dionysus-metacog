@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from dionysus_metacog.core import MetaCogSignal
 from dionysus_metacog.models import MarkovBlanketRecord, PomdpStateRecord
-from dionysus_metacog.provenance import SourceReference
+from dionysus_metacog.provenance import ProvenanceLedger, SourceReference
 
 
 class AttractorControlPolicy(StrEnum):
@@ -48,7 +48,7 @@ class AttractorBasin:
     depth: float
     width: float
     stability: float
-    sources: tuple[AttractorSource, ...] = ()
+    sources: tuple[SourceReference, ...] = ()
     metadata: Mapping[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -153,7 +153,7 @@ class AttractorAssessment:
             blanket=blanket,
         )
 
-    def to_signal(self) -> MetaCogSignal:
+    def to_signal(self, ledger: ProvenanceLedger | None = None) -> MetaCogSignal:
         """Convert the assessment into a portable metacognitive control signal."""
 
         metadata = {
@@ -163,6 +163,8 @@ class AttractorAssessment:
             "policy": self.policy.value,
             "source_ids": ",".join(self.source_ids),
         }
+        if ledger is not None:
+            metadata.update(ledger.metadata_for(self.source_ids))
         if self.blanket is not None:
             metadata.update(
                 {
