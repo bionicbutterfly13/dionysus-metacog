@@ -302,6 +302,9 @@ linoss-dynamics, Autonoesis, and Sakshi. The short rule is: adjacent packages
 own execution and ontology; Dionysus Metacognition owns portable records,
 control assessment, provenance, and payload translation.
 
+The dependency-free compatibility fixture contract is documented in
+`docs/adapter-compatibility-matrix.md`.
+
 Runnable host-runtime examples live in `examples/`:
 
 ```bash

@@ -58,6 +58,14 @@ Runnable versions live under `examples/`:
 | Autonoesis | SelfModel, meta-awareness, feelings | payload context, `MetaCogSignal` | self-model ontology owner |
 | Sakshi | `MetaCogPayload` or `MetaCogSignal` | witness/control dictionaries | verification and gating layer |
 
+## Compatibility Fixtures
+
+Reusable dependency-free fixture shapes live under
+`tests/fixtures/adapter_contracts.py`. They pin the structural fields each
+adapter consumes and provide a stable local contract for Elume,
+linoss-dynamics, Autonoesis, Sakshi, and dispatch handlers. See
+`docs/adapter-compatibility-matrix.md`.
+
 ## Release Guard
 
 Before publishing a release after adapter changes, run:
