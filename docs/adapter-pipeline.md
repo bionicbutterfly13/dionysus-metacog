@@ -22,6 +22,9 @@ objects with the required fields and return package-native records.
    meta-awareness, and metacognitive-feeling state.
 6. Sakshi may consume the payload as a witness event, write-guard payload,
    control action, or dominant ThoughtSeed snapshot.
+7. A host may route the payload through the dispatch protocol. Broker choices
+   such as RabbitMQ, Redis Streams, NATS, Kafka, or HTTP webhooks belong behind
+   host-owned handlers, not in this package.
 
 ## Example
 

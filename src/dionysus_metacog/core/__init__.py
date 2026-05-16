@@ -1,12 +1,16 @@
 """Core metacognitive control records."""
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
+from inspect import isawaitable
 from time import time
+from typing import Protocol, runtime_checkable
 
 JsonScalar = str | int | float | bool | None
 JsonValue = JsonScalar | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
+PayloadCallable = Callable[["MetaCogPayload"], None]
+AsyncPayloadCallable = Callable[["MetaCogPayload"], Awaitable[None]]
 
 
 class PromotionLabel(StrEnum):
@@ -112,11 +116,201 @@ class MetaCogPayload:
         }
 
 
+@runtime_checkable
+class MetaCogPayloadHandler(Protocol):
+    """Structural handler for host-side metacognitive payload dispatch."""
+
+    def handle(self, payload: MetaCogPayload) -> None:
+        """Handle a single metacognitive payload."""
+
+
+@runtime_checkable
+class AsyncMetaCogPayloadHandler(Protocol):
+    """Async structural handler for host-side metacognitive payload dispatch."""
+
+    async def handle(self, payload: MetaCogPayload) -> None:
+        """Handle a single metacognitive payload asynchronously."""
+
+
+@dataclass(frozen=True, slots=True)
+class DispatchFailure:
+    """Failure captured from a payload handler during dispatch."""
+
+    handler_index: int
+    handler_name: str
+    error_type: str
+    message: str
+
+
+@dataclass(frozen=True, slots=True)
+class DispatchResult:
+    """Result of dispatching a payload to one or more handlers."""
+
+    payload: MetaCogPayload
+    delivered: int = 0
+    failures: tuple[DispatchFailure, ...] = ()
+
+    @property
+    def success(self) -> bool:
+        """Return True when every attempted handler completed."""
+
+        return not self.failures
+
+
+class InProcessMetaCogDispatcher:
+    """Dependency-free in-process dispatcher for host runtimes."""
+
+    def __init__(
+        self,
+        handlers: Sequence[MetaCogPayloadHandler | PayloadCallable],
+        *,
+        fail_fast: bool = False,
+    ) -> None:
+        self._handlers = tuple(handlers)
+        self.fail_fast = fail_fast
+
+    @property
+    def handlers(self) -> tuple[MetaCogPayloadHandler | PayloadCallable, ...]:
+        """Return dispatch handlers in delivery order."""
+
+        return self._handlers
+
+    def dispatch(self, payload: MetaCogPayload) -> DispatchResult:
+        """Dispatch a payload to handlers in order."""
+
+        delivered = 0
+        failures: list[DispatchFailure] = []
+        for index, handler in enumerate(self.handlers):
+            try:
+                _deliver_payload(handler=handler, payload=payload)
+            except Exception as exc:  # noqa: BLE001 - dispatch records failures.
+                failures.append(_failure_from_exception(index, handler, exc))
+                if self.fail_fast:
+                    break
+            else:
+                delivered += 1
+        return DispatchResult(
+            payload=payload,
+            delivered=delivered,
+            failures=tuple(failures),
+        )
+
+
+class AsyncInProcessMetaCogDispatcher:
+    """Dependency-free async dispatcher for host runtimes."""
+
+    def __init__(
+        self,
+        handlers: Sequence[
+            MetaCogPayloadHandler
+            | AsyncMetaCogPayloadHandler
+            | PayloadCallable
+            | AsyncPayloadCallable
+        ],
+        *,
+        fail_fast: bool = False,
+    ) -> None:
+        self._handlers = tuple(handlers)
+        self.fail_fast = fail_fast
+
+    @property
+    def handlers(
+        self,
+    ) -> tuple[
+        MetaCogPayloadHandler
+        | AsyncMetaCogPayloadHandler
+        | PayloadCallable
+        | AsyncPayloadCallable,
+        ...,
+    ]:
+        """Return dispatch handlers in delivery order."""
+
+        return self._handlers
+
+    async def dispatch(self, payload: MetaCogPayload) -> DispatchResult:
+        """Dispatch a payload to sync or async handlers in order."""
+
+        delivered = 0
+        failures: list[DispatchFailure] = []
+        for index, handler in enumerate(self.handlers):
+            try:
+                result = _dispatch_call(handler=handler, payload=payload)
+                if isawaitable(result):
+                    await result
+            except Exception as exc:  # noqa: BLE001 - dispatch records failures.
+                failures.append(_failure_from_exception(index, handler, exc))
+                if self.fail_fast:
+                    break
+            else:
+                delivered += 1
+        return DispatchResult(
+            payload=payload,
+            delivered=delivered,
+            failures=tuple(failures),
+        )
+
+
+def _deliver_payload(
+    *,
+    handler: MetaCogPayloadHandler | PayloadCallable,
+    payload: MetaCogPayload,
+) -> None:
+    result = _dispatch_call(handler=handler, payload=payload)
+    if isawaitable(result):
+        close = getattr(result, "close", None)
+        if close is not None:
+            close()
+        raise TypeError("async handler requires AsyncInProcessMetaCogDispatcher")
+
+
+def _dispatch_call(
+    *,
+    handler: (
+        MetaCogPayloadHandler
+        | AsyncMetaCogPayloadHandler
+        | PayloadCallable
+        | AsyncPayloadCallable
+    ),
+    payload: MetaCogPayload,
+) -> object:
+    handle = getattr(handler, "handle", None)
+    if handle is not None:
+        return handle(payload)
+    return handler(payload)
+
+
+def _failure_from_exception(
+    index: int,
+    handler: object,
+    exc: Exception,
+) -> DispatchFailure:
+    return DispatchFailure(
+        handler_index=index,
+        handler_name=_handler_name(handler),
+        error_type=type(exc).__name__,
+        message=str(exc),
+    )
+
+
+def _handler_name(handler: object) -> str:
+    if hasattr(handler, "__name__"):
+        return str(handler.__name__)
+    return type(handler).__name__
+
+
 __all__ = [
+    "AsyncInProcessMetaCogDispatcher",
+    "AsyncMetaCogPayloadHandler",
+    "AsyncPayloadCallable",
+    "DispatchFailure",
+    "DispatchResult",
     "JsonScalar",
     "JsonValue",
+    "InProcessMetaCogDispatcher",
     "MetaCogPayload",
+    "MetaCogPayloadHandler",
     "MetaCogSignal",
     "MetaCogTrace",
+    "PayloadCallable",
     "PromotionLabel",
 ]

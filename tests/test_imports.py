@@ -1,7 +1,10 @@
 from dionysus_metacog import (
     AttractorAssessment,
     AttractorTransition,
+    DispatchResult,
+    InProcessMetaCogDispatcher,
     MetaCogPayload,
+    MetaCogPayloadHandler,
     ProvenanceLedger,
     __version__,
 )
@@ -16,7 +19,10 @@ def test_import_root_version() -> None:
     assert __version__ == "0.3.0"
     assert AttractorAssessment.__name__ == "AttractorAssessment"
     assert AttractorTransition.__name__ == "AttractorTransition"
+    assert DispatchResult.__name__ == "DispatchResult"
+    assert InProcessMetaCogDispatcher.__name__ == "InProcessMetaCogDispatcher"
     assert MetaCogPayload.__name__ == "MetaCogPayload"
+    assert MetaCogPayloadHandler.__name__ == "MetaCogPayloadHandler"
     assert ProvenanceLedger.__name__ == "ProvenanceLedger"
 
 

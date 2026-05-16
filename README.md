@@ -107,6 +107,23 @@ as_dict = payload.as_dict()
 The payload dictionary is safe to pass through queues, logs, HTTP APIs, CLIs, or
 runtime adapters that need a stable metacognitive control envelope.
 
+## Dispatch Protocol
+
+`MetaCogPayloadHandler` defines the minimal host-runtime dispatch seam:
+
+```python
+from dionysus_metacog import InProcessMetaCogDispatcher
+
+dispatcher = InProcessMetaCogDispatcher(handlers=(handler,))
+result = dispatcher.dispatch(payload)
+```
+
+`InProcessMetaCogDispatcher` and `AsyncInProcessMetaCogDispatcher` provide
+ordered, dependency-free fanout with captured `DispatchFailure` records.
+RabbitMQ, Redis Streams, NATS, Kafka, HTTP webhooks, and host event buses belong
+behind handler implementations, not inside the core package. See
+`docs/dispatch-protocol.md`.
+
 ## Attractor Sources
 
 Attractor-basin records must carry source backing. The initial source ledger
